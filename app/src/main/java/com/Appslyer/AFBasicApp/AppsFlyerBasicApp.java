@@ -3,12 +3,15 @@ package com.Appslyer.AFBasicApp;
 import com.appsflyer.AppsFlyerLib;
 import com.appsflyer.AppsFlyerConversionListener;
 import android.app.Application;
+import android.content.Intent;
+import android.os.Parcelable;
 import android.util.Log;
 import java.util.Map;
 import java.util.Objects;
 
 public class AppsFlyerBasicApp extends Application {
     public static final String LOG_TAG = "AppsFlyerBasicApp";
+    Map<String, Object> conversionData;
     @Override
     public void onCreate() {
         super.onCreate();
@@ -19,8 +22,6 @@ public class AppsFlyerBasicApp extends Application {
         AppsFlyerConversionListener conversionListener =  new AppsFlyerConversionListener() {
             @Override
             public void onConversionDataSuccess(Map<String, Object> conversionDataMap) {
-                for (String attrName : conversionDataMap.keySet())
-                    Log.d(LOG_TAG, "Conversion attribute: " + attrName + " = " + conversionDataMap.get(attrName));
                 String status = Objects.requireNonNull(conversionDataMap.get("af_status")).toString();
                 if(status.equals("Non-organic")){
                     if( Objects.requireNonNull(conversionDataMap.get("is_first_launch")).toString().equals("true")){
@@ -31,6 +32,7 @@ public class AppsFlyerBasicApp extends Application {
                 } else {
                     Log.d(LOG_TAG, "Conversion: This is an organic install.");
                 }
+                conversionData = conversionDataMap;
             }
 
             @Override
